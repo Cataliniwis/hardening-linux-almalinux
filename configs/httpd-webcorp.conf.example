@@ -1,0 +1,24 @@
+# =============================================================================
+# Configuración Apache para acceso restringido a /webcorp (ejemplo)
+# Ubicación: /etc/httpd/conf.d/webcorp.conf  o dentro de httpd.conf
+# =============================================================================
+
+<Directory "/webcorp">
+    AuthType Basic
+    AuthName "Acceso restringido - Grupo Contadores"
+    AuthUserFile /etc/httpd/secure/contadores.passwd
+    Require group contadores
+
+    Options -Indexes
+    AllowOverride None
+</Directory>
+
+# --- Generación del archivo de contraseñas ---
+# Primer usuario (crea el archivo):
+#   sudo htpasswd -c /etc/httpd/secure/contadores.passwd andrea
+# Usuarios siguientes (NO usar -c, sobrescribiría el archivo):
+#   sudo htpasswd /etc/httpd/secure/contadores.passwd pablo
+#
+# --- Permisos recomendados ---
+#   sudo chown root:apache /etc/httpd/secure/contadores.passwd
+#   sudo chmod 640 /etc/httpd/secure/contadores.passwd

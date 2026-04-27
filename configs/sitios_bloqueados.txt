@@ -1,0 +1,23 @@
+# Lista de dominios bloqueados por el proxy Squid
+# Ubicación recomendada: /etc/squid/sitios_bloqueados.txt
+# Formato: un dominio por línea (incluye subdominios automáticamente con dstdomain)
+
+# --- Redes sociales ---
+.facebook.com
+.tiktok.com
+.instagram.com
+.twitter.com
+.x.com
+
+# --- Streaming ---
+.youtube.com
+.netflix.com
+.twitch.tv
+
+# --- Diarios electrónicos (Chile) ---
+.emol.com
+.latercera.com
+.cooperativa.cl
+.biobiochile.cl
+.df.cl
+.t13.cl

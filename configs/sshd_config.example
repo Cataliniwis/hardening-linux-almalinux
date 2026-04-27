@@ -1,0 +1,46 @@
+# =============================================================================
+# /etc/ssh/sshd_config — Configuración endurecida (ejemplo)
+# =============================================================================
+# Reemplazar PUERTO_PERSONALIZADO e IP_DEL_SERVIDOR antes de aplicar.
+# Recordar: sudo semanage port -a -t ssh_port_t -p tcp PUERTO_PERSONALIZADO
+# =============================================================================
+
+# --- Conexión ---
+Port PUERTO_PERSONALIZADO
+ListenAddress IP_DEL_SERVIDOR
+
+# --- Acceso de superusuario ---
+PermitRootLogin no
+
+# --- Autenticación ---
+PasswordAuthentication yes
+PubkeyAuthentication yes
+PermitEmptyPasswords no
+
+# --- Limitaciones contra fuerza bruta ---
+MaxAuthTries 2
+LoginGraceTime 30
+MaxSessions 3
+
+# --- Inactividad (cierre tras 2 minutos sin actividad) ---
+ClientAliveInterval 120
+ClientAliveCountMax 0
+
+# --- Restricción por grupo ---
+AllowGroups remoto
+
+# --- Buenas prácticas adicionales ---
+Protocol 2
+X11Forwarding no
+AllowTcpForwarding no
+PermitUserEnvironment no
+StrictModes yes
+IgnoreRhosts yes
+HostbasedAuthentication no
+
+# --- Logging ---
+SyslogFacility AUTHPRIV
+LogLevel VERBOSE
+
+# --- Subsistema SFTP ---
+Subsystem sftp /usr/libexec/openssh/sftp-server

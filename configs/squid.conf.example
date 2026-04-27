@@ -1,0 +1,61 @@
+# =============================================================================
+# /etc/squid/squid.conf — Configuración con autenticación y filtrado (ejemplo)
+# =============================================================================
+# Reemplazar RED_LAN antes de aplicar (ej: 10.0.0.0/24)
+# =============================================================================
+
+# --- ACLs estándar de Squid ---
+acl localnet src 0.0.0.1-0.255.255.255
+acl localnet src 10.0.0.0/8
+acl localnet src 100.64.0.0/10
+acl localnet src 169.254.0.0/16
+acl localnet src 172.16.0.0/12
+acl localnet src 192.168.0.0/16
+acl localnet src fc00::/7
+acl localnet src fe80::/10
+
+acl SSL_ports port 443
+acl Safe_ports port 80          # http
+acl Safe_ports port 21          # ftp
+acl Safe_ports port 443         # https
+acl Safe_ports port 70          # gopher
+acl Safe_ports port 210         # wais
+acl Safe_ports port 1025-65535  # unregistered ports
+acl Safe_ports port 280         # http-mgmt
+acl Safe_ports port 488         # gss-http
+acl Safe_ports port 591         # filemaker
+acl Safe_ports port 777         # multiling http
+
+acl CONNECT method CONNECT
+
+# --- Autenticación básica para usuarios ---
+auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/contadores.passwd
+auth_param basic realm ProxyContadores
+auth_param basic credentialsttl 2 hours
+
+acl usuarios_autenticados proxy_auth REQUIRED
+
+# --- Lista de sitios bloqueados ---
+acl sitios_bloqueados dstdomain "/etc/squid/sitios_bloqueados.txt"
+
+# --- Red autorizada ---
+acl red_lab src RED_LAN
+
+# --- Reglas en orden de evaluación ---
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+http_access deny sitios_bloqueados
+http_access allow red_lab usuarios_autenticados
+http_access deny all
+
+# --- Puerto del proxy ---
+http_port 3128
+
+# --- Caché ---
+coredump_dir /var/spool/squid
+
+refresh_pattern ^ftp:           1440    20%     10080
+refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
+refresh_pattern .               0       20%     4320
